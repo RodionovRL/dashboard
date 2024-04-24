@@ -2,7 +2,7 @@ version: '3.8'
 services:
   orders-service:
     build:
-      context: ./
+      context: ./orders
       dockerfile: Dockerfile.app
     image: orders-image
     container_name: order-service
@@ -16,14 +16,37 @@ services:
       - orders-db
 
   orders-db:
-    build:
-      context: ./
     image: postgres:14-alpine
     container_name: orders-db
     ports:
       - "5432:5432"
     environment:
       - POSTGRES_DB=orders-db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+
+  users-service:
+    build:
+      context: ./users
+      dockerfile: Dockerfile.app
+    image: users-image
+    container_name: user-service
+    ports:
+      - "8181:8181"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://users-db:5432/users-db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=password
+    depends_on:
+      - users-db
+
+  users-db:
+    image: postgres:14-alpine
+    container_name: users-db
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_DB=users-db
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
 
