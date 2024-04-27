@@ -24,13 +24,22 @@ public class KafkaTopicConfig {
     }
 
     @Bean
-    public NewTopic orderPostRequestTopic() {
+    public NewTopic userGetRequestTopic() {
         return new NewTopic("user-get-request", 1, (short) 1);
     }
 
     @Bean
-    public NewTopic orderGetRequestTopic() {
+    public NewTopic userGetResponseTopic() {
         return new NewTopic("user-get-response", 1, (short) 1);
     }
 
+    @Bean
+    public NewTopic userListGetRequestTopic() {
+        return new NewTopic("users-list-get-request", 1, (short) 1);
+    }
+
+    @Bean
+    public NewTopic userListGetResponseTopic() {
+        return new NewTopic("users-list-get-response", 1, (short) 1);
+    }
 }

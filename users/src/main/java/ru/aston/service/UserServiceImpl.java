@@ -8,7 +8,9 @@ import ru.aston.mapper.UserMapper;
 import ru.aston.model.User;
 import ru.aston.repository.UserRepository;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -26,7 +28,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUserById(Long userId) {
-
         Optional<User> user = userRepository.findById(userId);
 
         if(user.isPresent()) {
@@ -35,5 +36,16 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("User with id = " + userId + " not found");
         }
 
+    }
+
+    @Override
+    public List<UserDto> getUserListByIds(List<Long> userIds) {
+        List<User> usersList = userRepository.findByIdIn(userIds);
+
+        List<UserDto> userDtoList = usersList.stream()
+                .map(UserMapper.INSTANCE::userToUserDto)
+                .collect(Collectors.toList());
+
+        return userDtoList;
     }
 }

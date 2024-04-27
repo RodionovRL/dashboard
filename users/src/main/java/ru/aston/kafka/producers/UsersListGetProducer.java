@@ -7,21 +7,22 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import ru.aston.dto.UserDto;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
-public class UserGetProducer {
+public class UsersListGetProducer {
     private final KafkaTemplate<String, String> kafkaTemplate;
     private ObjectMapper objectMapper;
 
-    public void sendMessage(UserDto userDto) {
-        String userJson;
+    public void sendMessage(List<UserDto> usersList) {
+        String usersListJson;
 
         try {
-            userJson = objectMapper.writeValueAsString(userDto);
+            usersListJson = objectMapper.writeValueAsString(usersList);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException("Failed to create json from userDto");
+            throw new RuntimeException("Failed to create json from userDto list");
         }
-
-        kafkaTemplate.send("user-get-response", userJson);
+        kafkaTemplate.send("users-list-get-response", usersListJson);
     }
 }

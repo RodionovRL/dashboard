@@ -19,4 +19,5 @@ public class UserGetConsumer {
         UserDto userDto = userService.getUserById(userId);
         userGetProducer.sendMessage(userDto);
     }
+
 }

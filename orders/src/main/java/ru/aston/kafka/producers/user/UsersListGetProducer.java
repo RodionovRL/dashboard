@@ -1,27 +1,28 @@
-package ru.aston.kafka.producers;
+package ru.aston.kafka.producers.user;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-import ru.aston.dto.UserDto;
+
+import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class UserGetProducer {
+public class UsersListGetProducer {
     private final KafkaTemplate<String, String> kafkaTemplate;
     private ObjectMapper objectMapper;
 
-    public void sendMessage(UserDto userDto) {
-        String userJson;
+    public void sendMessage(List<Long> idList) {
+        String ids;
 
         try {
-            userJson = objectMapper.writeValueAsString(userDto);
+            ids = objectMapper.writeValueAsString(idList);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException("Failed to create json from userDto");
+           throw new RuntimeException("Failed to create json from id list");
         }
 
-        kafkaTemplate.send("user-get-response", userJson);
+        kafkaTemplate.send("users-list-get-request", ids);
     }
 }

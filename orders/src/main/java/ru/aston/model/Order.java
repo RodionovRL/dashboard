@@ -1,5 +1,6 @@
 package ru.aston.model;
 
+import lombok.AllArgsConstructor;
 import ru.aston.OrderStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
