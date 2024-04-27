@@ -20,9 +20,7 @@ public class UsersListGetConsumer {
     @KafkaListener(topics = "users-list-get-response", groupId = "orders-group")
     public void consume(String message) {
         try {
-            System.out.println("ПРИШЛИ В КОНСЬЮМЕР ОРДЕРА" + message);
-            List<UserDto> receivedUserDtoList =
-                    objectMapper.readValue(message, new TypeReference<List<UserDto>>() {});
+            List<UserDto> receivedUserDtoList = objectMapper.readValue(message, new TypeReference<>() {});
             userDtoList.addAll(receivedUserDtoList);
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Failed to create UserDto list from Json");

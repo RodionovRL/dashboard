@@ -16,13 +16,11 @@ public class UsersListGetProducer {
 
     public void sendMessage(List<Long> idList) {
         String ids;
-
         try {
             ids = objectMapper.writeValueAsString(idList);
         } catch (JsonProcessingException e) {
            throw new RuntimeException("Failed to create json from id list");
         }
-
         kafkaTemplate.send("users-list-get-request", ids);
     }
 }

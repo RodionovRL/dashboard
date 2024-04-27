@@ -32,23 +32,18 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDto postOrder(Long userId, NewOrderDto order) {
-
         Order newOrder = OrderMapper.INSTANCE.newOrderDtoToOrder(order);
         newOrder.setCustomerId(userId);
-
         Order createdOrder = orderRepository.save(newOrder);
         OrderDto orderDto = setCustomerAndExecutorToOrder(createdOrder);
-
         return orderDto;
     }
 
     @Override
     public void delete(Long userId, Long orderId) {
         Optional<Order> optionalOrder = orderRepository.findById(orderId);
-
         if (optionalOrder.isPresent()) {
             Order order = optionalOrder.get();
-
             if (order.getCustomerId().equals(userId) && order.getStatus().equals(OrderStatus.NEW)) {
                 orderRepository.delete(order);
             } else {
@@ -62,17 +57,13 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto getOrderById(Long userId, Long orderId) {
         Optional<Order> optionalOrder = orderRepository.findById(orderId);
-
         if (optionalOrder.isPresent()) {
             Order order = optionalOrder.get();
             if (order.getStatus() == OrderStatus.NEW || order.getCustomerId().equals(userId)
                     || order.getExecutorId().equals(userId)) {
-
                 OrderDto orderDto = setCustomerAndExecutorToOrder(order);
 
-
                 // ADD HERE KAFKA WORKS with payment
-
 
                 return orderDto;
             } else {
@@ -87,11 +78,10 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderDto> getAllOrders(Long userId) {
         List<Order> ordersList = orderRepository.findByStatusOrCustomerIdOrExecutorId(
                 OrderStatus.NEW, userId, userId);
-
         List<OrderDto> orderDtoList = setCustomersAndExecutorsToOrdersList(ordersList);
 
         // KAFKA part
-        // fetch executor and customer data for each order.
+        // fetch PAYMENTS.
 
         return orderDtoList;
     }
@@ -100,58 +90,20 @@ public class OrderServiceImpl implements OrderService {
     public OrderDto updateOrder(Long userId, Long orderId, OrderDto orderDto) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
+        order = updateOrderFields(order, userId, orderDto);
 
-        // Validate that the order belongs to the user or the user is authorized to update it
-        validateUserAuthorization(order, userId);
-
-        updateOrderFields(order, userId, orderDto);
-
-
-        // Kafka operations
-
-
+        // Kafka operations with PAYMENT
         Order updatedOrder = orderRepository.save(order);
-        return OrderMapper.INSTANCE.orderToOrderDto(updatedOrder);
-    }
-
-    private void validateUserAuthorization(Order order, Long userId) {
-        if (!(userId.equals(order.getCustomerId()) || userId.equals(order.getExecutorId()))) {
-            throw new RuntimeException("User is not authorized to update the order");
-        }
-    }
-
-    private void updateOrderFields(Order order, Long userId, OrderDto orderDto) {
-        if (userId.equals(order.getCustomerId())) {
-            if (order.getStatus() == OrderStatus.NEW) {
-                order.setName(orderDto.getName());
-                order.setDescription(orderDto.getDescription());
-            } else if (order.getStatus() == OrderStatus.DONE
-                    && orderDto.getStatus() == OrderStatus.PAID) {
-                order.setStatus(OrderStatus.PAID);
-            } else {
-                throw new RuntimeException("Customer is not authorized to update the order");
-            }
-        } else if (userId.equals(order.getExecutorId())) {
-            if (order.getStatus() == OrderStatus.NEW
-                    && orderDto.getStatus() == OrderStatus.IN_PROCESS) {
-                order.setStatus(OrderStatus.IN_PROCESS);
-            } else if (order.getStatus() == OrderStatus.IN_PROCESS
-                    && orderDto.getStatus() == OrderStatus.DONE) {
-                order.setStatus(OrderStatus.DONE);
-            } else {
-                throw new RuntimeException("Executor is not authorized to update the order");
-            }
-        }
+        return setCustomerAndExecutorToOrder(updatedOrder);
     }
 
     @Override
     public List<OrderDto> getAllOrdersAdmin() {
         List<Order> ordersList = orderRepository.findAll();
-
         List<OrderDto> dtoList = setCustomersAndExecutorsToOrdersList(ordersList);
 
         // KAFKA part
-        // fetch executor and customer data for each order.
+        // fetch PAYMENT data for each order.
 
         return dtoList;
     }
@@ -159,13 +111,49 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto getOrderByIdAdmin(Long orderId) {
         Optional<Order> optionalOrder = orderRepository.findById(orderId);
-
         if (optionalOrder.isPresent()) {
             Order order = optionalOrder.get();
-            OrderDto orderDto = OrderMapper.INSTANCE.orderToOrderDto(order);
+            OrderDto orderDto = setCustomerAndExecutorToOrder(order);
             return orderDto;
         } else {
             throw new RuntimeException("Order with ID " + orderId + " not found");
+        }
+    }
+
+    private Order updateOrderFields(Order order, Long userId, OrderDto orderDto) {
+        if(!(userId.equals(order.getCustomerId()) || userId.equals(order.getExecutorId()))) {
+            if(order.getStatus() == OrderStatus.NEW
+                    && orderDto.getStatus() == OrderStatus.IN_PROCESS) {
+                order.setStatus(OrderStatus.IN_PROCESS);
+                order.setExecutorId(userId);
+            } else {
+                throw new RuntimeException("User is not authorized to update the order");
+            }
+        } else if(userId.equals(order.getCustomerId())) {
+            updateCustomersFields(order, orderDto);
+        } else if (userId.equals(order.getExecutorId())) {
+            if (order.getStatus() == OrderStatus.IN_PROCESS
+                    && orderDto.getStatus() == OrderStatus.DONE) {
+                order.setStatus(OrderStatus.DONE);
+            } else {
+                throw new RuntimeException("Executor is not authorized to update the order");
+            }
+        }
+        return order;
+    }
+
+    private void updateCustomersFields(Order order, OrderDto orderDto) {
+        if (order.getStatus() == OrderStatus.NEW) {
+            order.setName(orderDto.getName());
+            order.setDescription(orderDto.getDescription());
+        } else if(order.getStatus() == OrderStatus.DONE
+                && orderDto.getStatus() == OrderStatus.PAID) {
+
+            //PROCESS PAYMENT
+
+            order.setStatus(OrderStatus.PAID);
+        } else {
+            throw new RuntimeException("Customer is not authorized to update the order");
         }
     }
 
@@ -188,8 +176,9 @@ public class OrderServiceImpl implements OrderService {
             if (customer.isPresent()) {
                 orderDto.setCustomer(customer.get());
             }
-        } else if (order.getExecutorId() != null) {
-            Optional<UserDto> executor = Optional.ofNullable(fetchUser(order.getCustomerId()));
+        }
+        if (order.getExecutorId() != null) {
+            Optional<UserDto> executor = Optional.ofNullable(fetchUser(order.getExecutorId()));
             if (executor.isPresent()) {
                 orderDto.setExecutor(executor.get());
             }
@@ -199,9 +188,8 @@ public class OrderServiceImpl implements OrderService {
 
     private List<UserDto> fetchUsersList(List<Long> usersIds) {
         usersListGetProducer.sendMessage(usersIds);
-
         try {
-            Thread.sleep(2222);
+            Thread.sleep(3333);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new RuntimeException("Thread interrupted while waiting for response from Kafka");
@@ -235,7 +223,6 @@ public class OrderServiceImpl implements OrderService {
                 orderDtoMap.get(order.getId()).setCustomer(usersMap.get(customerId));
             }
         }
-
         return List.copyOf(orderDtoMap.values());
     }
 }

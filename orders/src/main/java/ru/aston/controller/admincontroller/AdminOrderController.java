@@ -12,15 +12,7 @@ import java.util.List;
 @RequestMapping(path = "/admin/orders")
 @AllArgsConstructor
 public class AdminOrderController {
-
     private OrderService orderService;
-
-    @DeleteMapping("/{orderId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteOrder(@PathVariable Long userId,
-                            @PathVariable Long orderId){
-        orderService.delete(userId, orderId);
-    }
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
@@ -30,8 +22,7 @@ public class AdminOrderController {
 
     @GetMapping("/{orderId}")
     @ResponseStatus(HttpStatus.OK)
-    public OrderDto getOrderById(@PathVariable Long userId,
-                                 @PathVariable Long orderId) {
-        return orderService.getOrderById(userId, orderId);
+    public OrderDto getOrderById(@PathVariable Long orderId) {
+        return orderService.getOrderByIdAdmin(orderId);
     }
 }

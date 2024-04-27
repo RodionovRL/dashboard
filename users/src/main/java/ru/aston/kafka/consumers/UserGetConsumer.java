@@ -11,7 +11,7 @@ import ru.aston.service.UserService;
 @AllArgsConstructor
 public class UserGetConsumer {
     private UserService userService;
-    UserGetProducer userGetProducer;
+    private UserGetProducer userGetProducer;
 
     @KafkaListener(topics = "user-get-request", groupId = "users-group")
     public void consume(String message) {
@@ -19,5 +19,4 @@ public class UserGetConsumer {
         UserDto userDto = userService.getUserById(userId);
         userGetProducer.sendMessage(userDto);
     }
-
 }

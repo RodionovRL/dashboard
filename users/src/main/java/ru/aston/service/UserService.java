@@ -6,7 +6,6 @@ import ru.aston.dto.UserDto;
 import java.util.List;
 
 public interface UserService {
-
     UserDto postUser(NewUserDto newUserDto);
 
     UserDto getUserById(Long userId);

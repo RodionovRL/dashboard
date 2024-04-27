@@ -6,7 +6,6 @@ import ru.aston.dto.NewOrderDto;
 import java.util.List;
 
 public interface OrderService {
-
     OrderDto postOrder(Long userId, NewOrderDto order);
 
     void delete(Long userId, Long orderId);
@@ -20,5 +19,4 @@ public interface OrderService {
     List<OrderDto> getAllOrdersAdmin();
 
     OrderDto getOrderByIdAdmin(Long orderId);
-
 }

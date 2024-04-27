@@ -17,7 +17,6 @@ public class UsersListGetProducer {
 
     public void sendMessage(List<UserDto> usersList) {
         String usersListJson;
-
         try {
             usersListJson = objectMapper.writeValueAsString(usersList);
         } catch (JsonProcessingException e) {

@@ -15,13 +15,11 @@ public class UserGetProducer {
 
     public void sendMessage(UserDto userDto) {
         String userJson;
-
         try {
             userJson = objectMapper.writeValueAsString(userDto);
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Failed to create json from userDto");
         }
-
         kafkaTemplate.send("user-get-response", userJson);
     }
 }

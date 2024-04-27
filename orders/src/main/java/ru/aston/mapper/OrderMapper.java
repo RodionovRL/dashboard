@@ -11,8 +11,6 @@ import org.mapstruct.factory.Mappers;
 public interface OrderMapper {
     OrderMapper INSTANCE = Mappers.getMapper(OrderMapper.class);
 
-    @Mapping(target = "executor", ignore = true)
-    @Mapping(target = "customer", ignore = true)
     @Mapping(target = "payment", ignore = true)
     OrderDto orderToOrderDto(Order order);
 
