@@ -12,11 +12,23 @@ import org.springframework.kafka.core.ProducerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Configuration class for Kafka producers.
+ * This class sets up the configuration for Kafka producers, including the bootstrap servers and serializers.
+ */
 @Configuration
 public class KafkaProducerConfig {
+
+    /**
+     * The address of the Kafka bootstrap servers.
+     */
     @Value(value = "${spring.kafka.bootstrap-servers}")
     private String bootstrapAddress;
 
+    /**
+     * Creates a producer factory for Kafka producers.
+     * @return ProducerFactory for Kafka producers.
+     */
     @Bean
     public ProducerFactory<String, String> producerFactory() {
         Map<String, Object> configProps = new HashMap<>();
@@ -26,6 +38,10 @@ public class KafkaProducerConfig {
         return new DefaultKafkaProducerFactory<>(configProps);
     }
 
+    /**
+     * Creates a KafkaTemplate for Kafka producers.
+     * @return KafkaTemplate for Kafka producers.
+     */
     @Bean
     public KafkaTemplate<String, String> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());

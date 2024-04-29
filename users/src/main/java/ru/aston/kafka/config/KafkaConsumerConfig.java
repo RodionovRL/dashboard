@@ -12,11 +12,23 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Configuration class for Kafka consumers.
+ * This class sets up the configuration for Kafka consumers, including the bootstrap servers and deserializers.
+ */
 @Configuration
 public class KafkaConsumerConfig {
+
+    /**
+     * The address of the Kafka bootstrap servers.
+     */
     @Value(value = "${spring.kafka.bootstrap-servers}")
     private String bootstrapAddress;
 
+    /**
+     * Creates a consumer factory for Kafka consumers.
+     * @return ConsumerFactory for Kafka consumers.
+     */
     @Bean
     public ConsumerFactory<String, Object> consumerFactory() {
         Map<String, Object> configProps = new HashMap<>();
@@ -26,6 +38,10 @@ public class KafkaConsumerConfig {
         return new DefaultKafkaConsumerFactory<>(configProps);
     }
 
+    /**
+     * Creates a ConcurrentKafkaListenerContainerFactory for Kafka consumers.
+     * @return ConcurrentKafkaListenerContainerFactory for Kafka consumers.
+     */
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, Object>
     kafkaListenerContainerFactory() {
