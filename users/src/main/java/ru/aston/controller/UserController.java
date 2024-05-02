@@ -1,6 +1,5 @@
 package ru.aston.controller;
 
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.aston.dto.NewUserDto;
 import ru.aston.dto.UserDto;
 import ru.aston.service.UserService;
+
+import javax.validation.Valid;
 
 /**
  * Controller class for managing private user-related HTTP requests.

@@ -8,8 +8,11 @@ import org.springframework.web.bind.annotation.*;
 import ru.aston.account.dto.AccountDto;
 import ru.aston.account.dto.NewAccountDto;
 import ru.aston.account.dto.UpdateAccountDto;
+<<<<<<< HEAD
+=======
 import ru.aston.account.mapper.AccountMapper;
 import ru.aston.account.model.Account;
+>>>>>>> develop
 import ru.aston.account.service.AccountService;
 
 import javax.validation.Valid;
@@ -20,18 +23,19 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class PrivateAccountController {
     private final AccountService service;
-    private final AccountMapper accountMapper;
-
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Account addAccount(@RequestBody @Validated NewAccountDto newAccountDto) {
-        log.info("addAccount, NewAccount={}", newAccountDto);
-
-        Account resultAccountDto = service.addAccount(accountMapper.toAccount(newAccountDto));
-
-        log.info("addAccount, resultAccountDto={}", resultAccountDto);
-        return resultAccountDto;
-    }
+//
+//    @PostMapping
+//    @ResponseStatus(HttpStatus.CREATED)
+//    public AccountDto addAccount(
+//            @RequestBody @Validated NewAccountDto newAccountDto
+//    ) {
+//        log.info("addAccount, NewAccount={}", newAccountDto);
+//
+//        AccountDto resultAccountDto = service.addAccount(newAccountDto);
+//
+//        log.info("addAccount, resultAccountDto={}", resultAccountDto);
+//        return resultAccountDto;
+//    }
 
     @GetMapping("/byId")
     public AccountDto getAccountById(

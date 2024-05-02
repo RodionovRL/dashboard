@@ -53,4 +53,17 @@ public class PrivatePaymentController {
 
         return resultPaymentDto;
     }
+
+    @GetMapping
+    public PaymentDto getPaymentByExecutorId(
+            @RequestParam("executorId") Long executorId
+    ) {
+        log.info("getPaymentByExecutorId , userId={}", executorId);
+
+        PaymentDto resultPaymentDto = service.getPaymentByUserId(executorId);
+
+        log.info("getPaymentByExecutorId, resultPaymentDto={}", resultPaymentDto);
+
+        return resultPaymentDto;
+    }
 }

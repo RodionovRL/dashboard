@@ -79,4 +79,22 @@ public class KafkaTopicConfig {
     public NewTopic paymentResponseTopic() {
         return new NewTopic("payment-response", 1, (short) 1);
     }
+    /**
+     * Defines a new Kafka topic for user get request.
+     * @return NewTopic instance representing the user get request topic.
+     */
+    @Bean
+    public NewTopic paymentGetRequestTopic() {
+        return new NewTopic("payment-get-request", 1, (short) 1);
+    }
+
+    /**
+     * Defines a new Kafka topic for user get response.
+     * @return NewTopic instance representing the user get response topic.
+     */
+    @Bean
+    public NewTopic paymentGetResponseTopic() {
+        return new NewTopic("payment-get-response", 1, (short) 1);
+    }
+
 }
