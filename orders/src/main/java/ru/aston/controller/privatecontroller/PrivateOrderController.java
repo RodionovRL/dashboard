@@ -17,7 +17,7 @@ import java.util.List;
  * This controller handles creating, retrieving, updating and deleting orders for a specific user.
  */
 @RestController
-@RequestMapping(path = "/users/{userId}/orders")
+@RequestMapping(path = "/orders/{userId}/orders")
 @AllArgsConstructor
 public class PrivateOrderController {
 

@@ -1,5 +1,14 @@
 version: '3.8'
 services:
+  discovery-server:
+    build:
+      context: ./discovery-server
+      dockerfile: Dockerfile.app
+    image: discovery-server-image
+    container_name: discovery-server
+    ports:
+      - "8761:8761"
+
   gateway:
     build:
       context: ./gateway
