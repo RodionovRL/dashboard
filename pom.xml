@@ -9,6 +9,7 @@
 		<module>orders</module>
 		<module>statistic</module>
 		<module>payments</module>
+		<module>discovery-server</module>
 	</modules>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
