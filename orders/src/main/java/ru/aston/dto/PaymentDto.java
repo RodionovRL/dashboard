@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Component
 public class PaymentDto {
 
     /**
@@ -28,7 +30,24 @@ public class PaymentDto {
     private Long sum;
 
     /**
+     * The orderId of the payment.
+     */
+    private Long orderId;
+
+    /**
+     * The customerId of the payment.
+     */
+    private Long customerId;
+
+    /**
+     * The executorId of the payment.
+     */
+    private Long executorId;
+
+    private String paymentStatus;
+
+    /**
      * The date and time when the payment was made.
      */
-    private LocalDateTime date;
+    private LocalDateTime dateTime;
 }
