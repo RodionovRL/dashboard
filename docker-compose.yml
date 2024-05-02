@@ -1,5 +1,14 @@
 version: '3.8'
 services:
+  gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile.app
+    image: gateway-image
+    container_name: gateway
+    ports:
+      - "8080:8080"
+
   orders-service:
     build:
       context: ./orders
