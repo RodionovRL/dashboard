@@ -8,6 +8,11 @@ import org.springframework.web.bind.annotation.*;
 import ru.aston.account.dto.AccountDto;
 import ru.aston.account.dto.NewAccountDto;
 import ru.aston.account.dto.UpdateAccountDto;
+<<<<<<< HEAD
+=======
+import ru.aston.account.mapper.AccountMapper;
+import ru.aston.account.model.Account;
+>>>>>>> develop
 import ru.aston.account.service.AccountService;
 
 import javax.validation.Valid;

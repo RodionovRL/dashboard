@@ -36,7 +36,7 @@ public class PaymentServiceImpl implements PaymentService {
         BigDecimal startCustomerAccount = customerAccount.getAmount();
         BigDecimal startExecutorAccount = executorAccount.getAmount();
 
-        payment.setPaymentStatus(PaymentStatus.II_PROGRESS);
+        payment.setPaymentStatus(PaymentStatus.IN_PROGRESS);
         payment.setDateTime(LocalDateTime.now());
 
         try {
@@ -97,7 +97,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     private Payment findPaymentByUserId(Long userId) {
-        return paymentRepository.findByUserId(userId)
+        return paymentRepository.findByCustomerIdOrExecutorId(userId, userId)
                 .orElseThrow(() -> new NotFoundException(String.format("Payment with userId=%d not found", userId)));
     }
 

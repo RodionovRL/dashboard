@@ -5,15 +5,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.aston.account.dto.UpdateAccountDto;
 import ru.aston.account.dto.UserDto;
-import ru.aston.account.kafka.consumers.users.UserGetConsumer;
-import ru.aston.account.kafka.consumers.users.UsersListGetConsumer;
-import ru.aston.account.kafka.produsers.users.UserGetProducer;
-import ru.aston.account.kafka.produsers.users.UsersListGetProducer;
+import ru.aston.payment.kafka.consumers.UserGetConsumer;
+import ru.aston.payment.kafka.consumers.UsersListGetConsumer;
+import ru.aston.payment.kafka.produsers.UserGetProducer;
+import ru.aston.payment.kafka.produsers.UsersListGetProducer;
 import ru.aston.account.mapper.AccountMapper;
 import ru.aston.account.dto.AccountDto;
 import ru.aston.account.model.Account;
 import ru.aston.account.repository.AccountRepository;
 import ru.aston.exception.NotFoundException;
+
+import java.util.List;
+import java.util.Map;
 
 import java.util.Collections;
 import java.util.List;

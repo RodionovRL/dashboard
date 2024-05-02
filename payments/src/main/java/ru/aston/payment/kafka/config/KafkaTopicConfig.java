@@ -40,7 +40,7 @@ public class KafkaTopicConfig {
      */
     @Bean
     public NewTopic userGetRequestTopic() {
-        return new NewTopic("user-get-request", 1, (short) 1);
+        return new NewTopic("payment-user-get-request", 1, (short) 1);
     }
 
     /**
@@ -49,7 +49,7 @@ public class KafkaTopicConfig {
      */
     @Bean
     public NewTopic userGetResponseTopic() {
-        return new NewTopic("user-get-response", 1, (short) 1);
+        return new NewTopic("payment-user-get-response", 1, (short) 1);
     }
 
     /**
@@ -58,7 +58,7 @@ public class KafkaTopicConfig {
      */
     @Bean
     public NewTopic userListGetRequestTopic() {
-        return new NewTopic("users-list-get-request", 1, (short) 1);
+        return new NewTopic("payment-user-list-get-request", 1, (short) 1);
     }
 
     /**
@@ -67,12 +67,14 @@ public class KafkaTopicConfig {
      */
     @Bean
     public NewTopic userListGetResponseTopic() {
-        return new NewTopic("users-list-get-response", 1, (short) 1);
+        return new NewTopic("payment-user-list-get-response", 1, (short) 1);
     }
+
     @Bean
     public NewTopic paymentRequestTopic() {
         return new NewTopic("payment-request", 1, (short) 1);
     }
+
     @Bean
     public NewTopic paymentResponseTopic() {
         return new NewTopic("payment-response", 1, (short) 1);

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -58,4 +59,6 @@ public class OrderDto {
      * The date and time when the order was created.
      */
     private LocalDateTime date;
+
+    private BigDecimal sum;
 }

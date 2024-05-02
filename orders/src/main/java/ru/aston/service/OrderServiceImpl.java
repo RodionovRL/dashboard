@@ -3,9 +3,11 @@ package ru.aston.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.aston.OrderStatus;
-import ru.aston.dto.UserDto;
+import ru.aston.dto.*;
+import ru.aston.kafka.consumers.user.PaymentRequestConsumer;
 import ru.aston.kafka.consumers.user.UserGetConsumer;
 import ru.aston.kafka.consumers.user.UsersListGetConsumer;
+import ru.aston.kafka.producers.user.PaymentRequestProducer;
 import ru.aston.kafka.producers.user.UserGetProducer;
 import ru.aston.kafka.producers.user.UsersListGetProducer;
 import ru.aston.mapper.OrderMapper;
@@ -13,8 +15,6 @@ import ru.aston.model.Order;
 import ru.aston.repository.OrderRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.aston.dto.NewOrderDto;
-import ru.aston.dto.OrderDto;
 
 import java.util.List;
 import java.util.Map;
@@ -40,6 +40,8 @@ public class OrderServiceImpl implements OrderService {
     private UserGetConsumer userGetConsumer;
     private UsersListGetProducer usersListGetProducer;
     private UsersListGetConsumer usersListGetConsumer;
+    private PaymentRequestProducer paymentRequestProducer;
+    private PaymentRequestConsumer paymentRequestConsumer;
 
     /**
      * {@inheritDoc}
@@ -140,7 +142,9 @@ public class OrderServiceImpl implements OrderService {
         // Kafka operations with PAYMENT
         Order updatedOrder = orderRepository.save(order);
         log.debug("User with ID: {} updated order with ID: {} - {}", userId, orderId, updatedOrder);
-        return setCustomerAndExecutorToOrder(updatedOrder);
+        OrderDto updatedOrderDto = setCustomerAndExecutorToOrder(updatedOrder);
+        updatedOrderDto.setPayment(orderDto.getPayment());
+        return updatedOrderDto;
     }
 
     /**
@@ -225,7 +229,10 @@ public class OrderServiceImpl implements OrderService {
         } else if(order.getStatus() == OrderStatus.DONE
                 && orderDto.getStatus() == OrderStatus.PAID) {
 
-            //PROCESS PAYMENT
+            paymentRequestProducer.sendMessage(new PaymentRequestDto(order.getId(),
+                    order.getCustomerId(),
+                    order.getExecutorId(), orderDto.getSum()));
+            orderDto.setPayment(fetchPayment());
 
             order.setStatus(OrderStatus.PAID);
             log.debug("Customer with ID: {} set order with ID: {} status as: {}",
@@ -328,5 +335,17 @@ public class OrderServiceImpl implements OrderService {
         log.debug("Retrieved users data are set to orders customer and executor fields. Orders list: {}",
                 orderDtoMap.values());
         return List.copyOf(orderDtoMap.values());
+    }
+
+    private PaymentDto fetchPayment() {
+        try {
+            Thread.sleep(2222);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            log.error("Thread interrupted while waiting for response from Kafka");
+            throw new RuntimeException("Thread interrupted while waiting for response from Kafka");
+        }
+        PaymentDto paymentDto = paymentRequestConsumer.getReceivedPaymentDto();
+        return paymentDto;
     }
 }

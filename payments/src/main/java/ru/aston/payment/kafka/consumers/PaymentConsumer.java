@@ -29,10 +29,10 @@ public class PaymentConsumer {
     private final PaymentProducer paymentProducer;
 
     /**
-     * Kafka listener method to consume messages from the "pyment-request" topic.
+     * Kafka listener method to consume messages from the "payment-request" topic.
      * @param message The message containing paymentDto.
      */
-    @KafkaListener(topics = "pyment-request", groupId = "payments-group")
+    @KafkaListener(topics = "payment-request", groupId = "payments-group")
     public void consume(String message) throws JsonProcessingException {
         NewPaymentDto newPaymentDto = mapper.readValue(message, NewPaymentDto.class);
         log.debug("Received new inputPaymentDto: {} from Orders service", newPaymentDto);

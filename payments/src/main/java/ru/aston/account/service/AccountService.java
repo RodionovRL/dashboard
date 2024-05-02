@@ -1,6 +1,7 @@
 package ru.aston.account.service;
 
 import ru.aston.account.dto.AccountDto;
+import ru.aston.account.dto.NewAccountDto;
 import ru.aston.account.dto.UpdateAccountDto;
 import ru.aston.account.model.Account;
 
